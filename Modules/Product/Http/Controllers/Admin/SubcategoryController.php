@@ -23,8 +23,8 @@ class SubcategoryController extends Controller
      * Show the form for creating a new resource.
      */
     public function create()
-    {
-        //
+    {$categoriesn = Category::all();
+        return view('admin.subcategories.create', compact('categories'));
     }
 
     /**
@@ -32,7 +32,21 @@ class SubcategoryController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'category_id' => 'required|exists:categories,id',
+            'name' => 'required',
+        ]);
+
+        Subcategory::create($request->all());
+            session()->flash('swal', [
+            'icon' => 'success',
+            'title' => 'Subcategory created successfully',
+            'text' => 'Subcategory has been created.',
+            'showConfirmButton' => false,
+            'timer' => 1500
+        ]);
+
+        return redirect()->route('admin.subcategories.index');
     }
 
     /**
