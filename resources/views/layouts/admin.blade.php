@@ -61,11 +61,17 @@
     @livewireScripts
     @stack('js')
 
-    @if(session('swal'))
+    @if (session('swal'))
+        <script>
+            Swal.fire({!! json_encode(session('swal')) !!});
+        </script>
+    @endif
     <script>
-        Swal.fire({!! json_encode(session('swal')) !!});
+        Livewire.on('swal', data => {
+            Swal.fire(data[0]);
+        });
     </script>
-    @endif  
+
 </body>
 
 </html>

@@ -4,6 +4,7 @@ namespace Modules\Product\database\seeders;
 
 use Illuminate\Database\Seeder;
 use Modules\Product\database\seeders\FamilySeeder;
+use Modules\Product\Models\Product;
 
 class ProductDatabaseSeeder extends Seeder
 {
@@ -15,5 +16,7 @@ class ProductDatabaseSeeder extends Seeder
         $this->call([
             FamilySeeder::class
         ]);
+
+        
     }
 }

@@ -18,12 +18,13 @@ class SuperUserSeeder extends Seeder
      */
     public function run()
     {
-        $user = User::create([
-            'name' => 'Admin',
-            'email' => 'ferisdra@hotmail.com',
-            'password' => Hash::make('12345678'),
-        ]);
-
-
+        $user = User::create(
+            [
+                'name' => 'Admin',
+                'email' => 'ferisdra@hotmail.com',
+                'password' => Hash::make('12345678'),
+            ],
+            ['name'=>]
+        );
     }
 }

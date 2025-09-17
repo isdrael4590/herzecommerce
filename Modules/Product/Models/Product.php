@@ -2,8 +2,11 @@
 
 namespace Modules\Product\Models;
 
+use Database\Factories\ProductFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+
+
 // use Modules\Product\Database\Factories\ProductFactory;
 
 class Product extends Model
@@ -33,5 +36,9 @@ class Product extends Model
          return $this->belongsToMany(Option::class)
                      ->withPivot('value')
                      ->withTimestamps();
+    }
+       protected static function newFactory()
+    {
+        return ProductFactory::new();
     }
 }

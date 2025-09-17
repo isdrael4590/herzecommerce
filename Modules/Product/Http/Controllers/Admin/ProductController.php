@@ -1,9 +1,11 @@
 <?php
 
-namespace Modules\Product\Http\Controllers;
+namespace Modules\Product\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
+
 
 class ProductController extends Controller
 {
@@ -12,7 +14,8 @@ class ProductController extends Controller
      */
     public function index()
     {
-        return view('product::index');
+        abort_if(Gate::denies('access_product'), 403);
+        return view('product::admin.index');
     }
 
     /**
@@ -20,7 +23,8 @@ class ProductController extends Controller
      */
     public function create()
     {
-        return view('product::create');
+        abort_if(!Gate::check('access_product') || !Gate::check('create'), 403);
+        return view('product::admin.create');
     }
 
     /**

@@ -20,7 +20,7 @@ services:
   # Nginx Web Server
   webserver:
     image: nginx:alpine
-    container_name: laravel_webserver
+    container_name: laravel_webserver 
     restart: unless-stopped
     ports:
       - "80:80"

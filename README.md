@@ -78,12 +78,11 @@ docker compose exec app php artisan migrate:refresh --seed
 
 ## clear config cachie
 docker compose exec app php artisan config:clear
-
-## Clear all caches
-
 docker compose exec app php artisan cache:clear
 docker compose exec app php artisan route:clear
 docker compose exec app php artisan view:clear
+docker compose exec app php artisan optimize:clear
+docker compose exec app php artisan key:generate
 
 ## 
 php artisan make:component AdminLayout
