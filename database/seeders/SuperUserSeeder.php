@@ -24,7 +24,6 @@ class SuperUserSeeder extends Seeder
                 'email' => 'ferisdra@hotmail.com',
                 'password' => Hash::make('12345678'),
             ],
-            ['name'=>]
         );
     }
 }

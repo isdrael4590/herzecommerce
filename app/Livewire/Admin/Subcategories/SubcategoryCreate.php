@@ -10,6 +10,7 @@ use Modules\Product\Models\Subcategory;
 class SubcategoryCreate extends Component
 {
     public $families;
+    
     public $subcategory = [
         'family_id' => '',
         'name' => '',
@@ -22,26 +23,35 @@ class SubcategoryCreate extends Component
         \Log::info('Mount ejecutado. Familias cargadas: ' . $this->families->count());
     }
 
-    public function updatedSubcategoryFamilyId($value)
-    {
-        \Log::info('updatedSubcategoryFamilyId ejecutado con valor: ' . $value);
-        $this->subcategory['category_id'] = '';
-        
-        // Forzar actualización del computed property
-        $this->resetComputedProperties();
-        
-        \Log::info('Categorías después del cambio: ' . $this->categories->count());
-    }
-
-    // Método alternativo para debug
+    // Método principal que se ejecutará cuando cambie family_id
     public function updatedSubcategory($value, $key)
     {
         \Log::info("updatedSubcategory ejecutado. Key: {$key}, Value: {$value}");
         
         if ($key === 'family_id') {
+            // Reset category_id cuando cambie la familia
             $this->subcategory['category_id'] = '';
+            
+            // Forzar actualización del computed property
+            unset($this->computedPropertyCache['categories']);
+            
             \Log::info('family_id cambió a: ' . $value);
+            \Log::info('category_id reseteado');
+            \Log::info('Categorías disponibles: ' . $this->categories->count());
         }
+    }
+
+    // Método alternativo más específico (como backup)
+    public function updatedSubcategoryFamilyId($value)
+    {
+        \Log::info('updatedSubcategoryFamilyId ejecutado con valor: ' . $value);
+        
+        $this->subcategory['category_id'] = '';
+        
+        // Forzar actualización del computed property
+        unset($this->computedPropertyCache['categories']);
+        
+        \Log::info('Categorías después del cambio: ' . $this->categories->count());
     }
 
     public function save()
@@ -93,4 +103,11 @@ class SubcategoryCreate extends Component
     {
         return view('livewire.admin.subcategories.subcategory-create');
     }
+
+    public function testFamilyChange()
+{
+    \Log::info('Test method ejecutado');
+    $this->subcategory['category_id'] = '';
+    unset($this->computedPropertyCache['categories']);
+}
 }
