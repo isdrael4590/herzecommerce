@@ -86,5 +86,4 @@ docker compose exec app php artisan key:generate
 
 ## 
 php artisan make:component AdminLayout
-
-
+docker compose exec app php artisan make:livewire Admin\Products\ProductCreate

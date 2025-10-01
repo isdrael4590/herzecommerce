@@ -123,24 +123,47 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
-    // 'providers' => [
-    //     // Service providers del framework Laravel
-    //     Illuminate\Auth\AuthServiceProvider::class,
-    //     Illuminate\Broadcasting\BroadcastServiceProvider::class,
-    //     Illuminate\Filesystem\FilesystemServiceProvider::class,
+    'providers' => [
+        //     // Service providers del framework Laravel
+        Illuminate\Auth\AuthServiceProvider::class,
+        Illuminate\Broadcasting\BroadcastServiceProvider::class,
+        Illuminate\Filesystem\FilesystemServiceProvider::class,
+        Illuminate\Auth\AuthServiceProvider::class,
+        Illuminate\Broadcasting\BroadcastServiceProvider::class,
+        Illuminate\Bus\BusServiceProvider::class,
+        Illuminate\Cache\CacheServiceProvider::class,
+        Illuminate\Foundation\Providers\ConsoleSupportServiceProvider::class,
+        Illuminate\Cookie\CookieServiceProvider::class,
+        Illuminate\Database\DatabaseServiceProvider::class,
+        Illuminate\Encryption\EncryptionServiceProvider::class,
+        Illuminate\Filesystem\FilesystemServiceProvider::class,
+        Illuminate\Foundation\Providers\FoundationServiceProvider::class,
+        Illuminate\Hashing\HashServiceProvider::class,
+        Illuminate\Mail\MailServiceProvider::class,
+        Illuminate\Notifications\NotificationServiceProvider::class,
+        Illuminate\Pagination\PaginationServiceProvider::class,
+        Illuminate\Pipeline\PipelineServiceProvider::class,
+        Illuminate\Queue\QueueServiceProvider::class,
+        Illuminate\Redis\RedisServiceProvider::class,
+        Illuminate\Auth\Passwords\PasswordResetServiceProvider::class,
+        Illuminate\Session\SessionServiceProvider::class,
+        Illuminate\Translation\TranslationServiceProvider::class,
+        Illuminate\Validation\ValidationServiceProvider::class,
+        Illuminate\View\ViewServiceProvider::class,
+        Livewire\LivewireServiceProvider::class,
+        //     // ... otros providers del core
 
-    //     // ... otros providers del core
+        //     // Service providers de tu aplicación
+        App\Providers\AppServiceProvider::class,
 
-    //     // Service providers de tu aplicación
-    //     App\Providers\AppServiceProvider::class,
+        // Service providers de módulos
 
-    //     // Service providers de módulos
+        Nwidart\Modules\LaravelModulesServiceProvider::class,
+        Modules\Product\Providers\ProductServiceProvider::class,
+        Modules\Product\Providers\EventServiceProvider::class,
+        Modules\Product\Providers\RouteServiceProvider::class,
 
-    //     // Nwidart\Modules\LaravelModulesServiceProvider::class,
-    //     // Modules\Product\Providers\ProductServiceProvider::class,
-    //     // Modules\Product\Providers\EventServiceProvider::class,
-    //     // Modules\Product\Providers\RouteServiceProvider::class,
-    // ],
+    ],
 
 
 ];

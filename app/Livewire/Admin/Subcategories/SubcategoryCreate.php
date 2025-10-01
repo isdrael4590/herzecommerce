@@ -1,7 +1,7 @@
 <?php
+
 namespace App\Livewire\Admin\Subcategories;
 
-use Livewire\Attributes\Computed;
 use Livewire\Component;
 use Modules\Product\Models\Category;
 use Modules\Product\Models\Family;
@@ -9,105 +9,66 @@ use Modules\Product\Models\Subcategory;
 
 class SubcategoryCreate extends Component
 {
-    public $families;
+    // Propiedades separadas en lugar de array
+    public $family_id = '';
+    public $category_id = '';
+    public $name = '';
     
-    public $subcategory = [
-        'family_id' => '',
-        'name' => '',
-        'category_id' => '',
-    ];
+    public $families;
+    public $availableCategories = [];
 
     public function mount()
     {
         $this->families = Family::all();
-        \Log::info('Mount ejecutado. Familias cargadas: ' . $this->families->count());
+        $this->availableCategories = collect();
     }
 
-    // Método principal que se ejecutará cuando cambie family_id
-    public function updatedSubcategory($value, $key)
+    // Método que se ejecuta cuando cambia family_id
+    public function updatedFamilyId($value)
     {
-        \Log::info("updatedSubcategory ejecutado. Key: {$key}, Value: {$value}");
+        \Log::info('Family ID changed to: ' . $value);
         
-        if ($key === 'family_id') {
-            // Reset category_id cuando cambie la familia
-            $this->subcategory['category_id'] = '';
-            
-            // Forzar actualización del computed property
-            unset($this->computedPropertyCache['categories']);
-            
-            \Log::info('family_id cambió a: ' . $value);
-            \Log::info('category_id reseteado');
-            \Log::info('Categorías disponibles: ' . $this->categories->count());
+        $this->category_id = ''; // Reset category
+        
+        if ($value) {
+            $this->availableCategories = Category::where('family_id', $value)->get();
+            \Log::info('Categories loaded: ' . $this->availableCategories->count());
+        } else {
+            $this->availableCategories = collect();
         }
     }
 
-    // Método alternativo más específico (como backup)
-    public function updatedSubcategoryFamilyId($value)
+    // Método público para llamar manualmente
+    public function changeFamilia($familyId)
     {
-        \Log::info('updatedSubcategoryFamilyId ejecutado con valor: ' . $value);
-        
-        $this->subcategory['category_id'] = '';
-        
-        // Forzar actualización del computed property
-        unset($this->computedPropertyCache['categories']);
-        
-        \Log::info('Categorías después del cambio: ' . $this->categories->count());
+        \Log::info('changeFamilia called with: ' . $familyId);
+        $this->family_id = $familyId;
+        $this->updatedFamilyId($familyId);
     }
 
     public function save()
     {
-        $this->validate(
-            [
-                'subcategory.family_id' => 'required|exists:families,id',
-                'subcategory.category_id' => 'required|exists:categories,id',
-                'subcategory.name' => 'required|string|max:255',
-            ],
-            [],
-            [
-                'subcategory.family_id' => 'Familia',
-                'subcategory.category_id' => 'Categoría',
-                'subcategory.name' => 'Nombre',
-            ]
-        );
-
-        Subcategory::create($this->subcategory);
-
-        session()->flash('swal', [
-            'icon' => 'success',
-            'title' => 'Subcategory created successfully',
-            'text' => 'Subcategory has been created.',
-            'showConfirmButton' => false,
-            'timer' => 1500
+        $this->validate([
+            'family_id' => 'required|exists:families,id',
+            'category_id' => 'required|exists:categories,id',
+            'name' => 'required|string|min:3|max:255',
         ]);
+
+        Subcategory::create([
+            'family_id' => $this->family_id,
+            'category_id' => $this->category_id,
+            'name' => $this->name,
+        ]);
+
+        session()->flash('message', 'SubCategoría creada exitosamente.');
 
         return redirect()->route('admin.subcategories.index');
     }
 
-    #[Computed()]
-    public function categories()
-    {
-        \Log::info('Método categories() ejecutado. family_id actual: ' . ($this->subcategory['family_id'] ?? 'null'));
-        
-        if (empty($this->subcategory['family_id'])) {
-            \Log::info('family_id está vacío, retornando colección vacía');
-            return collect();
-        }
-
-        $categories = Category::where('family_id', $this->subcategory['family_id'])->get();
-        \Log::info('Categorías encontradas: ' . $categories->count());
-        
-        return $categories;
-    }
-
     public function render()
     {
+        \Log::info('Rendering - Family: ' . $this->family_id . ', Categories: ' . $this->availableCategories->count());
+        
         return view('livewire.admin.subcategories.subcategory-create');
     }
-
-    public function testFamilyChange()
-{
-    \Log::info('Test method ejecutado');
-    $this->subcategory['category_id'] = '';
-    unset($this->computedPropertyCache['categories']);
-}
 }

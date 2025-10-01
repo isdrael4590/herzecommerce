@@ -1,70 +1,102 @@
 <div>
     <form wire:submit.prevent="save">
-        <div class="card">
-            <x-validation-errors class="mb-4" />
+        <div class="card p-6">
+            @if (session()->has('message'))
+                <div class="alert alert-success mb-4">
+                    {{ session('message') }}
+                </div>
+            @endif
             
             <!-- Familia -->
             <div class="mb-4">
-                <x-label class="mb-2">
-                    {{ __('Familia') }}
-                </x-label>
-                <x-select class="w-full" wire:model.live="subcategory.family_id" wire:change="$refresh">
-                    <option value="">{{ __('Seleccione una familia') }}</option>
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                    Familia
+                </label>
+                <select class="w-full border border-gray-300 rounded px-3 py-2"
+                        wire:model.live="family_id">
+                    <option value="">Seleccione una familia</option>
                     @foreach ($families as $family)
-                        <option value="{{ $family->id }}">
-                            {{ $family->name }}
-                        </option>
+                        <option value="{{ $family->id }}">{{ $family->name }}</option>
                     @endforeach
-                </x-select>
+                </select>
+                @error('family_id')
+                    <span class="text-red-500 text-sm">{{ $message }}</span>
+                @enderror
             </div>
-
+            
             <!-- Categoría -->
             <div class="mb-4">
-                <x-label class="mb-2">
-                    {{ __('Categoría') }}
-                </x-label>
-                <x-select class="w-full" wire:model.live="subcategory.category_id">
-                    @if(empty($subcategory['family_id']))
-                        <option value="">{{ __('Primero seleccione una familia') }}</option>
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                    Categoría
+                </label>
+                <select class="w-full border border-gray-300 rounded px-3 py-2"
+                        wire:model="category_id"
+                        {{ empty($family_id) ? 'disabled' : '' }}>
+                    @if (empty($family_id))
+                        <option value="">Primero seleccione una familia</option>
                     @else
-                        <option value="">{{ __('Seleccione una categoría') }}</option>
-                        @foreach ($this->categories as $category)
-                            <option value="{{ $category->id }}">
-                                {{ $category->name }}
-                            </option>
+                        <option value="">Seleccione una categoría</option>
+                        @foreach ($availableCategories as $category)
+                            <option value="{{ $category->id }}">{{ $category->name }}</option>
                         @endforeach
                     @endif
-                </x-select>
+                </select>
+                @error('category_id')
+                    <span class="text-red-500 text-sm">{{ $message }}</span>
+                @enderror
             </div>
-
+            
             <!-- Nombre -->
             <div class="mb-6">
-                <label for="name" class="block text-sm font-medium text-gray-700 mb-2">
-                    {{ __('Nombre') }}
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                    Nombre de la SubCategoría
                 </label>
-                <x-input class="w-full" wire:model="subcategory.name" 
-                         placeholder="Ingrese el nombre de la SubCategoría" />
+                <input type="text"
+                       class="w-full border border-gray-300 rounded px-3 py-2"
+                       wire:model="name"
+                       placeholder="Ingrese el nombre de la SubCategoría">
+                @error('name')
+                    <span class="text-red-500 text-sm">{{ $message }}</span>
+                @enderror
             </div>
-
-            <!-- Botón -->
+            
+            <!-- Debug Info -->
+            <div class="mb-4 p-4 bg-gray-100 rounded text-sm">
+                <strong>Debug Simplificado:</strong><br>
+                Family ID: {{ $family_id ?: 'vacío' }}<br>
+                Category ID: {{ $category_id ?: 'vacío' }}<br>
+                Nombre: {{ $name ?: 'vacío' }}<br>
+                Categorías disponibles: {{ $availableCategories->count() }}
+                
+                <!-- Botón de test manual -->
+                <div class="mt-2">
+                    <button type="button" 
+                            wire:click="changeFamilia('1')"
+                            class="px-3 py-1 bg-yellow-500 text-white text-xs rounded">
+                        Test: Seleccionar Familia 1
+                    </button>
+                    @if($families->count() > 1)
+                        <button type="button" 
+                                wire:click="changeFamilia('{{ $families->skip(1)->first()->id ?? 2 }}')"
+                                class="px-3 py-1 bg-purple-500 text-white text-xs rounded ml-2">
+                            Test: Seleccionar Familia 2
+                        </button>
+                    @endif
+                </div>
+            </div>
+            
+            <!-- Botones -->
             <div class="flex justify-end space-x-3">
-                <x-button>
-                    {{ __('Crear SubCategoría') }}
-                </x-button>
-    <button type="button" wire:click="testFamilyChange">Test Family Change</button>
-
+                <button type="button"
+                        class="px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400"
+                        onclick="history.back()">
+                    Cancelar
+                </button>
+                <button type="submit"
+                        class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+                    Crear SubCategoría
+                </button>
             </div>
         </div>
     </form>
-
-    <!-- Debug temporal -->
-    <div class="mt-4 p-4 bg-gray-100 rounded">
-        <h3 class="font-bold">Debug Info:</h3>
-        <p><strong>Family ID:</strong> {{ $subcategory['family_id'] ?: 'Vacío' }}</p>
-        <p><strong>Category ID:</strong> {{ $subcategory['category_id'] ?: 'Vacío' }}</p>
-        <p><strong>Nombre:</strong> {{ $subcategory['name'] ?: 'Vacío' }}</p>
-        <p><strong>Total Familias:</strong> {{ count($families) }}</p>
-        <p><strong>Total Categorías:</strong> {{ $this->categories->count() }}</p>
-    </div>
-    @dump($subcategory, $this->categories)
 </div>
